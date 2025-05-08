@@ -6,7 +6,9 @@ from getpass import getpass
 FOLDER_PATH = r'PATH'
 OUTPUT_PATH = r'PATH'
 SEVEN_ZIP_PATH = r'PATH'
-OUTPUT_FILE_NAME = 'File.zip'
+OUTPUT_FILE_NAME = 'FILE.zip'
+REMOTE_NAME = 'NAME'
+REMOTE_PATH = 'PAHT'
 
 def git_sync(folder_path: str) -> None:
     """
@@ -71,11 +73,24 @@ def compress(folder_path: str, output_path: str) -> None:
         ], check=True)
     print(f"Folder {folder_path} compressed and encrypted successfully to {output_path}.")
 
+
 if __name__ == "__main__":
     # Sync the folder with Git
     git_sync(FOLDER_PATH)
 
     # Compress the folder
     compress(FOLDER_PATH, OUTPUT_PATH)
+
+    '''
+    Sync with rclone
+    rclone sync --interactive /local/path remote:path # syncs /local/path to the remote
+    '''
+    subprocess.run([
+        'rclone', 'sync', '--interactive',
+        os.path.join(OUTPUT_PATH, OUTPUT_FILE_NAME),  # Local path
+        f'{REMOTE_NAME}:{REMOTE_PATH}'  # Remote path
+    ], check=True)
+    print(f"Folder {OUTPUT_FILE_NAME} synced with remote {REMOTE_NAME}:{REMOTE_PATH}.")
+
 
     input("Press Enter to exit...")
